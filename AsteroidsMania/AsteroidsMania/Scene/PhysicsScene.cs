@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Media;
 using System.IO;
 using AsteroidsMania.Utils;
+using AsteroidsMania.Core;
 
 namespace AsteroidsMania.Scenes
 {
@@ -30,19 +31,19 @@ namespace AsteroidsMania.Scenes
         protected DebugViewXNA debugView;
         protected Matrix projection;
 
-        
+        Ship ship;
 
         public PhysicsScene()
         {
             world = null;
-
+            ship = new Ship();
            
         }
 
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
-            
+            ship.LoadContent(content);
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
@@ -618,8 +619,8 @@ namespace AsteroidsMania.Scenes
         public override void Update(GameTime gameTime, Game game)
         {
             base.Update(gameTime, game);
-            
 
+            ship.Update(gameTime);
             // variable time step but never less then 30 Hz
             world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / PhysicsUtils.FPS)));
         }
@@ -627,8 +628,8 @@ namespace AsteroidsMania.Scenes
         public override void Draw(SpriteBatch spriteBatch)
         {
             //spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.TranslationMatrix);
-           
 
+            ship.Draw(spriteBatch);
             //debugView.RenderDebugData(ref projection, ref cameraMatrix);
         }
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AsteroidsMania.Scenes;
+using AsteroidsMania.Service;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,11 +13,15 @@ namespace AsteroidsMania
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        PhysicsScene ph;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            ServiceHelper.Game = this;
+            Components.Add(new InputManagerService(this));
+            ph = new PhysicsScene();
         }
 
         /// <summary>
@@ -29,6 +35,8 @@ namespace AsteroidsMania
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            graphics.IsFullScreen = true;
+
         }
 
         /// <summary>
@@ -39,6 +47,7 @@ namespace AsteroidsMania
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            ph.LoadContent(Content,GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
@@ -65,6 +74,7 @@ namespace AsteroidsMania
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+            ph.Update(gameTime,this);
         }
 
         /// <summary>
@@ -73,11 +83,15 @@ namespace AsteroidsMania
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+
+            spriteBatch.Begin();
+            ph.Draw(spriteBatch);
+            spriteBatch.End();
         }
     }
 }
