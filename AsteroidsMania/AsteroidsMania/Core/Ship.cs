@@ -36,12 +36,21 @@ namespace AsteroidsMania.Core
         {
 
             texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
-            if(index == PlayerIndex.One)
+            switch (index)
             {
-                position.X = 100;
-                position.Y = 100;
+                case PlayerIndex.One:
+                    position.X = 100;
+                    position.Y = 100;
+                    break;
+                case PlayerIndex.Two:
+                    position.X = 1000;
+                    position.Y = 100;
+                    break;
+                default:
+                    Console.WriteLine("Default case");
+                    break;
             }
-            
+
             origin.X = texture.Width / 2;
             origin.Y = texture.Height / 2;
         }

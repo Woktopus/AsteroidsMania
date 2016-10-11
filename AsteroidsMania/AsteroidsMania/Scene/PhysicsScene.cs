@@ -44,8 +44,8 @@ namespace AsteroidsMania.Scenes
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
-            ship.LoadContent(content);
-            ship2.LoadContent(content);
+            ship.LoadContent(content,PlayerIndex.One);
+            ship2.LoadContent(content,PlayerIndex.Two);
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
@@ -182,7 +182,7 @@ namespace AsteroidsMania.Scenes
             base.Update(gameTime, game);
 
             ship.Update(gameTime);
-            ship.Update(gameTime);
+            ship2.Update(gameTime);
             // variable time step but never less then 30 Hz
             world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / PhysicsUtils.FPS)));
         }
