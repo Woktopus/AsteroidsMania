@@ -32,12 +32,16 @@ namespace AsteroidsMania.Core
         }   
 
     
-        public void LoadContent(ContentManager content)
+        public void LoadContent(ContentManager content, PlayerIndex index)
         {
 
             texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
-            position.X = 300;
-            position.Y = 300;
+            if(index == PlayerIndex.One)
+            {
+                position.X = 100;
+                position.Y = 100;
+            }
+            
             origin.X = texture.Width / 2;
             origin.Y = texture.Height / 2;
         }

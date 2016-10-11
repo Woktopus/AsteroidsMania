@@ -32,18 +32,20 @@ namespace AsteroidsMania.Scenes
         protected Matrix projection;
 
         Ship ship;
+        Ship ship2;
 
         public PhysicsScene()
         {
             world = null;
             ship = new Ship();
-           
+            ship2 = new Ship();
         }
 
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
             ship.LoadContent(content);
+            ship2.LoadContent(content);
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
@@ -180,6 +182,7 @@ namespace AsteroidsMania.Scenes
             base.Update(gameTime, game);
 
             ship.Update(gameTime);
+            ship.Update(gameTime);
             // variable time step but never less then 30 Hz
             world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / PhysicsUtils.FPS)));
         }
@@ -189,6 +192,7 @@ namespace AsteroidsMania.Scenes
             //spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.TranslationMatrix);
 
             ship.Draw(spriteBatch);
+            ship2.Draw(spriteBatch);
             //debugView.RenderDebugData(ref projection, ref cameraMatrix);
         }
     }
