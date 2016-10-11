@@ -25,6 +25,9 @@ namespace AsteroidsMania.Core
         public Vector2 origin = Vector2.Zero;
 
         float vitesse = 3f;
+        GraphicsDevice graph;
+
+        ContentManager localContent;
 
         public Ship()
         {
@@ -32,9 +35,10 @@ namespace AsteroidsMania.Core
         }   
 
     
-        public void LoadContent(ContentManager content, PlayerIndex index)
+        public void LoadContent(ContentManager content, PlayerIndex index, GraphicsDevice vi)
         {
-
+            localContent = content;
+            graph = vi;
             texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
             switch (index)
             {
@@ -84,6 +88,23 @@ namespace AsteroidsMania.Core
                 position.Y += direction.Y;
                 position.X += direction.X;
                 vitesse-=0.1f;
+            }
+           // System.Console.WriteLine(view);
+            if(position.Y > graph.Viewport.Height)
+            {
+                position.Y = 0;
+            }
+            if (position.Y <0)
+            {
+                position.Y = graph.Viewport.Height;
+            }
+            if (position.X > graph.Viewport.Width)
+            {
+                position.X = 0;
+            }
+            if (position.X <0)
+            {
+                position.X = graph.Viewport.Width;
             }
         }
 

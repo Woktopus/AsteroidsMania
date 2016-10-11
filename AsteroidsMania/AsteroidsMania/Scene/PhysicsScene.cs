@@ -44,8 +44,8 @@ namespace AsteroidsMania.Scenes
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
-            ship.LoadContent(content,PlayerIndex.One);
-            ship2.LoadContent(content,PlayerIndex.Two);
+            ship.LoadContent(content,PlayerIndex.One,graph);
+            ship2.LoadContent(content,PlayerIndex.Two, graph);
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
