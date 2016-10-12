@@ -44,8 +44,7 @@ namespace AsteroidsMania.Scenes
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
-            ship.LoadContent(content,PlayerIndex.One,graph);
-            ship2.LoadContent(content,PlayerIndex.Two, graph);
+            
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
@@ -65,7 +64,7 @@ namespace AsteroidsMania.Scenes
             world.ContactManager.PreSolve += onPreSolve;
             world.ContactManager.PostSolve += onPostSolve;
 
-            world.Gravity = new Vector2(0, 0);
+            world.Gravity = Vector2.Zero;
             // NOTE: you should probably unregister on destructor or wherever is relevant...
 
             if (debugView == null)
@@ -80,6 +79,12 @@ namespace AsteroidsMania.Scenes
                 ConvertUnits.ToSimUnits(graph.Viewport.Height), 0f,
                 0f, 1f
             );
+
+            //instance objects with body
+            ship.LoadContent(content, PlayerIndex.One, graph, world);
+            //ship2.LoadContent(content,PlayerIndex.Two, graph, world);
+
+
         }
 
         bool onBeginContact(Contact contact)
@@ -182,7 +187,7 @@ namespace AsteroidsMania.Scenes
             base.Update(gameTime, game);
 
             ship.Update(gameTime);
-            ship2.Update(gameTime);
+            //ship2.Update(gameTime);
             // variable time step but never less then 30 Hz
             world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / PhysicsUtils.FPS)));
         }
@@ -192,8 +197,8 @@ namespace AsteroidsMania.Scenes
             //spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.TranslationMatrix);
 
             ship.Draw(spriteBatch);
-            ship2.Draw(spriteBatch);
-            //debugView.RenderDebugData(ref projection, ref cameraMatrix);
+            //ship2.Draw(spriteBatch);
+            debugView.RenderDebugData(ref projection);
         }
     }
 }

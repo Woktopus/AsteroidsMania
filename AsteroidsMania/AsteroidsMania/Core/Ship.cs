@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using AsteroidsMania.Service;
 using Microsoft.Xna.Framework.Input;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 
 namespace AsteroidsMania.Core
 {
@@ -25,9 +27,13 @@ namespace AsteroidsMania.Core
         public Vector2 origin = Vector2.Zero;
 
         float vitesse = 3f;
+
         GraphicsDevice graph;
 
         ContentManager localContent;
+
+        public Body body;
+
 
         public Ship()
         {
@@ -35,11 +41,15 @@ namespace AsteroidsMania.Core
         }   
 
     
-        public void LoadContent(ContentManager content, PlayerIndex index, GraphicsDevice vi)
+        public void LoadContent(ContentManager content, PlayerIndex index, GraphicsDevice vi, World world)
         {
             localContent = content;
             graph = vi;
             texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
+
+            body = BodyFactory.CreateRectangle(world, texture.Width, texture.Height, 1f);
+            body.BodyType = BodyType.Dynamic;
+
             switch (index)
             {
                 case PlayerIndex.One:
@@ -57,6 +67,11 @@ namespace AsteroidsMania.Core
 
             origin.X = texture.Width / 2;
             origin.Y = texture.Height / 2;
+        }
+
+        public Vector2 GetBodyPosition()
+        {
+            return body.Position;
         }
 
         public void Update(GameTime gameTime)
