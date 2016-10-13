@@ -9,6 +9,7 @@ using AsteroidsMania.Service;
 using Microsoft.Xna.Framework.Input;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using AsteroidsMania.Scenes;
 
 namespace AsteroidsMania.Core
 {
@@ -32,7 +33,7 @@ namespace AsteroidsMania.Core
 
         ContentManager localContent;
 
-        public Body body;
+        Body body;
 
 
         public Ship()
@@ -46,10 +47,7 @@ namespace AsteroidsMania.Core
             localContent = content;
             graph = vi;
             texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
-
-            body = BodyFactory.CreateRectangle(world, texture.Width, texture.Height, 1f);
-            body.BodyType = BodyType.Dynamic;
-
+            
             switch (index)
             {
                 case PlayerIndex.One:
@@ -64,19 +62,22 @@ namespace AsteroidsMania.Core
                     Console.WriteLine("Default case");
                     break;
             }
-
             origin.X = texture.Width / 2;
             origin.Y = texture.Height / 2;
+
+            body = BodyFactory.CreateRectangle(world, texture.Width, texture.Height, 1);
+            body.BodyType = BodyType.Dynamic;
+            body.Position = position;
         }
 
-        public Vector2 GetBodyPosition()
-        {
-            return body.Position;
-        }
+       
 
         public void Update(GameTime gameTime)
         {
             var gamepadState = ServiceHelper.Get<InputManagerService>().GamePad.GetState(this.gamepadIndex);
+            
+            var gamepadStateBefore = ServiceHelper.Get<InputManagerService>().GamePad.GetPrevState(this.gamepadIndex);
+
             var keyboardState = ServiceHelper.Get<InputManagerService>().Keyboard.GetState();
 
             if (gamepadState.ThumbSticks.Left.X > 0.5 || keyboardState.IsKeyDown(Keys.Right))
@@ -121,11 +122,12 @@ namespace AsteroidsMania.Core
             {
                 position.X = graph.Viewport.Width;
             }
+            body.Rotation = rotation;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, null, Color.White, rotation, origin, 0.1f,SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, position , null, Color.White, body.Rotation, origin, 0.1f,SpriteEffects.None, 0f);
         }
     }
 }
