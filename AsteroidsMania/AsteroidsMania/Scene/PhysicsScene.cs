@@ -20,16 +20,17 @@ using System.IO;
 using AsteroidsMania.Utils;
 using AsteroidsMania.Core;
 using AsteroidsMania.Service;
+using AsteroidsMania.Scene;
 
 namespace AsteroidsMania.Scenes
 {
     public class PhysicsScene : Scene
     {
-        public const string wintext = "CONGRATULATIONS !";
-
         public World world;
 
         protected DebugViewXNA debugView;
+        protected Matrix projection;
+        Camera camera;
 
         Ship ship;
         
@@ -37,6 +38,7 @@ namespace AsteroidsMania.Scenes
         public PhysicsScene()
         {
             world = null;
+            camera = new Camera();  
             ship = new Ship();
         }
 
@@ -54,7 +56,11 @@ namespace AsteroidsMania.Scenes
                 world.Clear();
             
             world.Gravity = Vector2.Zero;
-            
+
+            camera.viewportWidth = graph.Viewport.Width;
+            camera.viewportHeight = graph.Viewport.Height;
+            camera.zoom = 1f;
+
 
             if (debugView == null)
             {
@@ -62,6 +68,12 @@ namespace AsteroidsMania.Scenes
 
                 debugView.LoadContent(graph, content);
             }
+
+            projection = Matrix.CreateOrthographicOffCenter(
+                0f, ConvertUnits.ToSimUnits(graph.Viewport.Width),
+                ConvertUnits.ToSimUnits(graph.Viewport.Height), 0f,
+                0f, 1f
+            );
 
             ship.LoadContent(content, PlayerIndex.One, graph, world);
         }
@@ -77,8 +89,9 @@ namespace AsteroidsMania.Scenes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-
             ship.Draw(spriteBatch);
+            Matrix cameraMatrix = camera.DebugMatrix;
+            debugView.RenderDebugData(ref projection, ref cameraMatrix);
         }
     }
 }
