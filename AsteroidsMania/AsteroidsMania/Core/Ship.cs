@@ -53,7 +53,7 @@ namespace AsteroidsMania.Core
         {
             graph = vi;
 
-
+            gamepadIndex = index;
             switch (index)
             {
                 case PlayerIndex.One:
@@ -71,12 +71,7 @@ namespace AsteroidsMania.Core
 
             body = CreatePolygonFromTexture(texture, world, 1, ConvertUnits.ToSimUnits(position), 0.1f);
             body.BodyType = BodyType.Dynamic;
-
-            if(index == PlayerIndex.One)
-            {
-                body.BodyType = BodyType.Static;
-                body.FixedRotation = true;
-            }
+            
 
         }
 
@@ -93,10 +88,9 @@ namespace AsteroidsMania.Core
             foreach (Vertices vert in vertexList)
                 vert.Scale(ref vertScale);
 
-            Vector2 centroid = -vertices.GetCentroid();
+            Vector2 centroid = vertices.GetCentroid();
             vertices.Translate(ref centroid);
             //basketOrigin = -centroid;
-
             return BodyFactory.CreateCompoundPolygon(world, vertexList, density, position);
         }
 
@@ -105,7 +99,7 @@ namespace AsteroidsMania.Core
         public void Update(GameTime gameTime)
         {
             var keyboardState = ServiceHelper.Get<InputManagerService>().Keyboard.GetState();
-            var gamepadState = ServiceHelper.Get<InputManagerService>().GamePad.GetState(this.gamepadIndex);
+            var gamepadState = ServiceHelper.Get<InputManagerService>().GamePad.GetState(gamepadIndex);
 
             if (gamepadState.ThumbSticks.Left.X > 0.5 || keyboardState.IsKeyDown(Keys.Left))
             {
@@ -142,7 +136,6 @@ namespace AsteroidsMania.Core
                 body.SetTransform(new Vector2(ConvertUnits.ToSimUnits(graph.Viewport.Width), body.Position.Y), body.Rotation);
 
             }
-
         }
 
         public void Draw(SpriteBatch spriteBatch)
