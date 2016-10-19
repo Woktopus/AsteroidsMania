@@ -8,6 +8,7 @@ namespace AsteroidsMania
 {
     public class Game1 : Game
     {
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         PhysicsScene ph;
@@ -24,7 +25,7 @@ namespace AsteroidsMania
         protected override void Initialize()
         {
             base.Initialize();
-            graphics.IsFullScreen = true;
+            //graphics.IsFullScreen = true;
         }
 
         protected override void LoadContent()

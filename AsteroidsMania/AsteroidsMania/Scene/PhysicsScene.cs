@@ -20,7 +20,7 @@ using System.IO;
 using AsteroidsMania.Utils;
 using AsteroidsMania.Core;
 using AsteroidsMania.Service;
-using AsteroidsMania.Scene;
+using FarseerPhysics.Factories;
 
 namespace AsteroidsMania.Scenes
 {
@@ -30,36 +30,39 @@ namespace AsteroidsMania.Scenes
 
         protected DebugViewXNA debugView;
         protected Matrix projection;
-        Camera camera;
+
 
         Ship ship;
-        
+        Ship ship2;
+
+        Texture2D texture;
+
+
 
         public PhysicsScene()
         {
             world = null;
-            camera = new Camera();  
             ship = new Ship();
+            ship2 = new Ship();
         }
 
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
-            
+            texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
+
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
 
             if (world == null)
-                world = new World(Vector2.Zero);
+                world = new World(new Vector2(0, 0));
             else
                 world.Clear();
             
-            world.Gravity = Vector2.Zero;
+            world.Gravity = new Vector2(0, 0);
 
-            camera.viewportWidth = graph.Viewport.Width;
-            camera.viewportHeight = graph.Viewport.Height;
-            camera.zoom = 1f;
+         
 
 
             if (debugView == null)
@@ -76,6 +79,7 @@ namespace AsteroidsMania.Scenes
             );
 
             ship.LoadContent(content, PlayerIndex.One, graph, world);
+            ship2.LoadContent(content, PlayerIndex.Two, graph, world);
         }
 
         public override void Update(GameTime gameTime, Game game)
@@ -84,14 +88,16 @@ namespace AsteroidsMania.Scenes
             //ici gamepad.1.connected   passe à true chez moi 
             
             ship.Update(gameTime);
-            world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, (1f / PhysicsUtils.FPS)));
+            ship2.Update(gameTime);
+            world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             ship.Draw(spriteBatch);
-            Matrix cameraMatrix = camera.DebugMatrix;
-            debugView.RenderDebugData(ref projection, ref cameraMatrix);
+            ship2.Draw(spriteBatch);
+
+            debugView.RenderDebugData(ref projection);
         }
     }
 }
