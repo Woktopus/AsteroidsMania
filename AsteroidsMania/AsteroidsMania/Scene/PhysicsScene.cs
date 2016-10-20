@@ -80,7 +80,7 @@ namespace AsteroidsMania.Scenes
 
             ship.LoadContent(content, PlayerIndex.One, graph, world);
 
-            asteroid.LoadContent(world, content, new Vector2(), TailleEnum.GRAND, new Vector2(), 1f);
+            asteroid.LoadContent(world, content, graph, new Vector2(), TailleEnum.GRAND, new Vector2(), 25f);
         }
 
         public override void Update(GameTime gameTime, Game game)

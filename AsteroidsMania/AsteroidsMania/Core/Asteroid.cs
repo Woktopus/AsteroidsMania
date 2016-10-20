@@ -24,6 +24,8 @@ namespace AsteroidsMania.Core
         public int Health { get; set; }
         public float Vitesse { get; set; }
 
+        GraphicsDevice graph;
+
         Body body;
         TailleEnum taille { get; set; }
         Texture2D texture { get; set; }
@@ -40,7 +42,7 @@ namespace AsteroidsMania.Core
             
         }
 
-        public void LoadContent(World world, ContentManager content, Vector2 positionEnJeu, TailleEnum taille, Vector2 Transform, float rotation)
+        public void LoadContent(World world, ContentManager content, GraphicsDevice graph, Vector2 positionEnJeu, TailleEnum taille, Vector2 Transform, float rotation)
         {
             Id = NextAsteroidUniqueId;
             NextAsteroidUniqueId++;
@@ -64,11 +66,14 @@ namespace AsteroidsMania.Core
                     Health = 150;
                     break;
             }
-
+            Vitesse = 10;
             texture = content.Load<Texture2D>("Asteroid/Asteroide_1.png");
-
+            this.graph = graph;
+            position.X = 200;
+            position.Y = 200;
             body = CreatePolygonFromTexture(texture, world, 1f, ConvertUnits.ToSimUnits(position), 0.1f);
             body.BodyType = BodyType.Dynamic;
+            body.Rotation = rotation;
         }
 
         public Body CreatePolygonFromTexture(Texture2D tex, World world, float density, Vector2 position, float scale, TriangulationAlgorithm algorithm = TriangulationAlgorithm.Bayazit)
@@ -92,6 +97,26 @@ namespace AsteroidsMania.Core
         public void Update()
         {
             body.LinearVelocity = new Vector2(-(float)Math.Sin((double)body.Rotation) * Vitesse, (float)Math.Cos((double)body.Rotation) * Vitesse);
+            body.AngularVelocity = 0;
+            if (ConvertUnits.ToDisplayUnits(body.Position.Y) > graph.Viewport.Height)
+            {
+                body.SetTransform(new Vector2(body.Position.X, 0), body.Rotation);
+            }
+            if (body.Position.Y < 0)
+            {
+                body.SetTransform(new Vector2(body.Position.X, ConvertUnits.ToSimUnits(graph.Viewport.Height)), body.Rotation);
+            }
+            if (ConvertUnits.ToDisplayUnits(body.Position.X) > graph.Viewport.Width)
+            {
+                body.SetTransform(new Vector2(0, body.Position.Y), body.Rotation);
+
+            }
+            if (body.Position.X < 0)
+            {
+                position.X = graph.Viewport.Width;
+                body.SetTransform(new Vector2(ConvertUnits.ToSimUnits(graph.Viewport.Width), body.Position.Y), body.Rotation);
+
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
