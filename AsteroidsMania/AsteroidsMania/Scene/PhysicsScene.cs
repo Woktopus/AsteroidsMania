@@ -33,9 +33,10 @@ namespace AsteroidsMania.Scenes
 
 
         Ship ship;
-        Ship ship2;
 
-        Texture2D texture;
+        Asteroid asteroid;
+
+        Texture2D textureShip, textureAsteroid;
 
 
 
@@ -43,13 +44,15 @@ namespace AsteroidsMania.Scenes
         {
             world = null;
             ship = new Ship();
-            ship2 = new Ship();
+            asteroid = new Asteroid();
         }
 
         public override void LoadContent(ContentManager content, GraphicsDevice graph)
         {
             base.LoadContent(content, graph);
-            texture = content.Load<Texture2D>("Ship/Vaisseau_1.png");
+
+            textureShip = content.Load<Texture2D>("Ship/Vaisseau_1.png");
+            textureAsteroid = content.Load<Texture2D>("Asteroid/Asteroide_1.png");
 
             Settings.UseFPECollisionCategories = true;
 
@@ -61,9 +64,6 @@ namespace AsteroidsMania.Scenes
                 world.Clear();
             
             world.Gravity = new Vector2(0, 0);
-
-         
-
 
             if (debugView == null)
             {
@@ -79,7 +79,8 @@ namespace AsteroidsMania.Scenes
             );
 
             ship.LoadContent(content, PlayerIndex.One, graph, world);
-            ship2.LoadContent(content, PlayerIndex.Two, graph, world);
+
+            asteroid.LoadContent(world, content, new Vector2(), TailleEnum.GRAND, new Vector2(), 1f);
         }
 
         public override void Update(GameTime gameTime, Game game)
@@ -88,14 +89,14 @@ namespace AsteroidsMania.Scenes
             //ici gamepad.1.connected   passe à true chez moi 
             
             ship.Update(gameTime);
-            ship2.Update(gameTime);
+            //ship2.Update(gameTime);
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             ship.Draw(spriteBatch);
-            ship2.Draw(spriteBatch);
+            //ship2.Draw(spriteBatch);
 
             debugView.RenderDebugData(ref projection);
         }
