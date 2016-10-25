@@ -66,12 +66,11 @@ namespace AsteroidsMania.Core
                     Health = 150;
                     break;
             }
-            Vitesse = 10;
-            texture = content.Load<Texture2D>("Asteroid/Asteroide_1.png");
+            this.texture = content.Load<Texture2D>("Asteroid/Asteroide_1.png");
             this.graph = graph;
             position.X = 200;
             position.Y = 200;
-            body = CreatePolygonFromTexture(texture, world, 1f, ConvertUnits.ToSimUnits(position), 0.1f);
+            body = CreatePolygonFromTexture(texture, world, 1, ConvertUnits.ToSimUnits(position), 0.1f);
             body.BodyType = BodyType.Dynamic;
             body.Rotation = rotation;
         }
@@ -94,7 +93,7 @@ namespace AsteroidsMania.Core
             return BodyFactory.CreateCompoundPolygon(world, vertexList, density, position);
         }
 
-        public void Update()
+        public void Update(GameTime gametime)
         {
             body.LinearVelocity = new Vector2(-(float)Math.Sin((double)body.Rotation) * Vitesse, (float)Math.Cos((double)body.Rotation) * Vitesse);
             body.AngularVelocity = 0;
@@ -121,8 +120,7 @@ namespace AsteroidsMania.Core
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 position = ConvertUnits.ToDisplayUnits(body.Position);
-            spriteBatch.Draw(texture, position, null, Color.White, body.Rotation, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(body.Position), null, Color.White, body.Rotation, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
         }
     }
 }

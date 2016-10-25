@@ -89,6 +89,7 @@ namespace AsteroidsMania.Scenes
             //ici gamepad.1.connected   passe à true chez moi 
             
             ship.Update(gameTime);
+            asteroid.Update(gameTime);
             //ship2.Update(gameTime);
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
@@ -96,6 +97,7 @@ namespace AsteroidsMania.Scenes
         public override void Draw(SpriteBatch spriteBatch)
         {
             ship.Draw(spriteBatch);
+            asteroid.Draw(spriteBatch);
             //ship2.Draw(spriteBatch);
 
             debugView.RenderDebugData(ref projection);

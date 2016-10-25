@@ -140,9 +140,7 @@ namespace AsteroidsMania.Core
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
-            Vector2 position =ConvertUnits.ToDisplayUnits( body.Position);
-            spriteBatch.Draw(texture, position, null, Color.White, body.Rotation, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(body.Position), null, Color.White, body.Rotation, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
         }
     }
 }
