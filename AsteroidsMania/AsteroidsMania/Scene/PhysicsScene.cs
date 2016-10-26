@@ -54,6 +54,8 @@ namespace AsteroidsMania.Scenes
             textureShip = content.Load<Texture2D>("Ship/Vaisseau_1.png");
             textureAsteroid = content.Load<Texture2D>("Asteroid/Asteroide_1.png");
 
+
+
             Settings.UseFPECollisionCategories = true;
 
             ConvertUnits.SetDisplayUnitToSimUnitRatio(32f);
@@ -64,6 +66,13 @@ namespace AsteroidsMania.Scenes
                 world.Clear();
             
             world.Gravity = new Vector2(0, 0);
+
+
+
+            world.ContactManager.BeginContact += onBeginContact;/*
+            world.ContactManager.EndContact += onEndContact;
+            world.ContactManager.PreSolve += onPreSolve;
+            world.ContactManager.PostSolve += onPostSolve;*/
 
             if (debugView == null)
             {
@@ -81,6 +90,40 @@ namespace AsteroidsMania.Scenes
             ship.LoadContent(content, PlayerIndex.One, graph, world);
 
             asteroid.LoadContent(world, content, graph, new Vector2(), TailleEnum.GRAND, new Vector2(), 25f);
+
+
+        }
+
+        bool onBeginContact(Contact contact)
+        {
+            BeginContactForShip(contact);
+            
+
+            Fixture fa = contact.FixtureA;
+            Fixture fb = contact.FixtureB;
+
+            return true;
+        }
+
+        private void BeginContactForShip(Contact contact)
+        {
+            Fixture fa = contact.FixtureA;
+            Fixture fb = contact.FixtureB;
+
+            if ((int)fa.UserData == 50)
+            {
+                if ((int)fb.UserData == 100)
+                {
+                    ship.body.Position = Vector2.Zero;
+                }
+            }
+            if ((int)fa.UserData == 100)
+            {
+                if ((int)fb.UserData == 50)
+                {
+                    ship.body.Position = Vector2.Zero;
+                }
+            }
         }
 
         public override void Update(GameTime gameTime, Game game)

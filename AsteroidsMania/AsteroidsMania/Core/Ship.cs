@@ -13,6 +13,7 @@ using FarseerPhysics;
 using FarseerPhysics.Common;
 using FarseerPhysics.Common.TextureTools;
 using FarseerPhysics.Common.Decomposition;
+using FarseerPhysics.Collision.Shapes;
 
 namespace AsteroidsMania.Core
 {
@@ -71,7 +72,6 @@ namespace AsteroidsMania.Core
 
             body = CreatePolygonFromTexture(texture, world, 1, ConvertUnits.ToSimUnits(position), 0.1f);
             body.BodyType = BodyType.Dynamic;
-            
 
         }
 
@@ -91,7 +91,7 @@ namespace AsteroidsMania.Core
             Vector2 centroid = vertices.GetCentroid();
             vertices.Translate(ref centroid);
             //basketOrigin = -centroid;
-            return BodyFactory.CreateCompoundPolygon(world, vertexList, density, position);
+            return BodyFactory.CreateCompoundPolygon(world, vertexList, density, position,50);
         }
 
 
