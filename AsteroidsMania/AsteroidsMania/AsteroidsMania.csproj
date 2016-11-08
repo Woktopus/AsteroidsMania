@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\Asteroid.cs" />
+    <Compile Include="Core\Missile.cs" />
     <Compile Include="Core\Ship.cs" />
     <Compile Include="Core\TailleEnum.cs" />
     <Compile Include="Game1.cs" />

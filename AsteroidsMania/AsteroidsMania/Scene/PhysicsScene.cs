@@ -21,6 +21,7 @@ using AsteroidsMania.Utils;
 using AsteroidsMania.Core;
 using AsteroidsMania.Service;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework.Input;
 
 namespace AsteroidsMania.Scenes
 {
@@ -32,18 +33,19 @@ namespace AsteroidsMania.Scenes
         protected Matrix projection;
 
 
-        Ship ship;
 
         Asteroid asteroid;
 
         Texture2D textureShip, textureAsteroid;
 
+        List<Ship> shipList;
 
 
         public PhysicsScene()
         {
             world = null;
-            ship = new Ship();
+            shipList = new List<Ship>();
+            shipList.Add(new Ship());
             asteroid = new Asteroid();
         }
 
@@ -53,8 +55,6 @@ namespace AsteroidsMania.Scenes
 
             textureShip = content.Load<Texture2D>("Ship/Vaisseau_1.png");
             textureAsteroid = content.Load<Texture2D>("Asteroid/Asteroide_1.png");
-
-
 
             Settings.UseFPECollisionCategories = true;
 
@@ -87,7 +87,7 @@ namespace AsteroidsMania.Scenes
                 0f, 1f
             );
 
-            ship.LoadContent(content, PlayerIndex.One, graph, world);
+            shipList.ElementAt(0).LoadContent(content, PlayerIndex.One, graph, world);
 
             asteroid.LoadContent(world, content, graph, new Vector2(), TailleEnum.GRAND, new Vector2(), 25f);
 
@@ -114,14 +114,14 @@ namespace AsteroidsMania.Scenes
             {
                 if ((int)fb.UserData == 100)
                 {
-                    ship.body.Position = Vector2.Zero;
+                    shipList.ElementAt(0).body.Position = Vector2.Zero;
                 }
             }
             if ((int)fa.UserData == 100)
             {
                 if ((int)fb.UserData == 50)
                 {
-                    ship.body.Position = Vector2.Zero;
+                    shipList.ElementAt(0).body.Position = Vector2.Zero;
                 }
             }
         }
@@ -130,16 +130,44 @@ namespace AsteroidsMania.Scenes
         {
             base.Update(gameTime, game);
             //ici gamepad.1.connected   passe à true chez moi 
-            
-            ship.Update(gameTime);
+
+            getInput();
+
+            shipList.ElementAt(0).Update(gameTime);
             asteroid.Update(gameTime);
             //ship2.Update(gameTime);
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
+        private void getInput()
+        {
+            var keyboardState = ServiceHelper.Get<InputManagerService>().Keyboard.GetState();
+            var gamepadState = ServiceHelper.Get<InputManagerService>().GamePad.GetState(PlayerIndex.One);
+
+            if ( keyboardState.IsKeyDown(Keys.Left))
+            {
+                shipList.ElementAt(0).isRotating = -1;
+            }
+            if ( keyboardState.IsKeyDown(Keys.Right))
+            {
+                shipList.ElementAt(0).isRotating = 1;
+            }
+            if(keyboardState.IsKeyUp(Keys.Left) && keyboardState.IsKeyUp(Keys.Right))
+            {
+                shipList.ElementAt(0).isRotating = 0;
+            }
+            if (keyboardState.IsKeyDown(Keys.Space))
+            {
+                shipList.ElementAt(0).isGoingForward = true;
+            }if (keyboardState.IsKeyUp(Keys.Space))
+            {
+                shipList.ElementAt(0).isGoingForward = false;
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            ship.Draw(spriteBatch);
+            shipList.ElementAt(0).Draw(spriteBatch);
             asteroid.Draw(spriteBatch);
             //ship2.Draw(spriteBatch);
 

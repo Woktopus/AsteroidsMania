@@ -41,7 +41,8 @@ namespace AsteroidsMania.Core
         public Body body;
 
 
-        
+        public bool isGoingForward = false;
+        public short isRotating = 0;
 
 
         public Ship()
@@ -73,6 +74,9 @@ namespace AsteroidsMania.Core
             body = CreatePolygonFromTexture(texture, world, 1, ConvertUnits.ToSimUnits(position), 0.1f);
             body.BodyType = BodyType.Dynamic;
 
+            body.LinearDamping = 0.5f;
+            body.AngularDamping = 0.5f;
+
         }
 
 
@@ -98,24 +102,29 @@ namespace AsteroidsMania.Core
 
         public void Update(GameTime gameTime)
         {
-            var keyboardState = ServiceHelper.Get<InputManagerService>().Keyboard.GetState();
-            var gamepadState = ServiceHelper.Get<InputManagerService>().GamePad.GetState(gamepadIndex);
+            if (isRotating<0)
+            {
+                //body.Rotation += 0.05f;
+                body.AngularVelocity = 5;
+            } else if (isRotating>0)
+            {
+               // body.Rotation -= 0.05f; 
+                body.AngularVelocity = -5;
+            } else if(isRotating==0)
+            {
+                body.AngularVelocity = 0;
+            }
+            if (isGoingForward)
+            {
 
-            if (gamepadState.ThumbSticks.Left.X > 0.5 || keyboardState.IsKeyDown(Keys.Left))
-            {
-                body.Rotation += 0.05f;
-                body.AngularVelocity = 0;
+                Vector2 acc = new Vector2(-(float)Math.Sin((double)body.Rotation)*0.1f, (float)Math.Cos((double)body.Rotation)*0.1f);
+                if (body.LinearVelocity.Length() < 10)
+                {
+                    body.LinearVelocity += acc * gameTime.ElapsedGameTime.Milliseconds;
+                }
+                                                
+
             }
-            if (gamepadState.ThumbSticks.Left.X < -0.5 || keyboardState.IsKeyDown(Keys.Right))
-            {
-                body.Rotation -= 0.05f;
-                body.AngularVelocity = 0;
-            }
-            if (keyboardState.IsKeyDown(Keys.Space) || gamepadState.Triggers.Right > 0)
-            {
-                body.LinearVelocity = new Vector2(-(float)Math.Sin((double)body.Rotation)*vitesse, (float)Math.Cos((double)body.Rotation)*vitesse);
-            }
-            Console.WriteLine(body.WorldCenter);
             
             if (ConvertUnits.ToDisplayUnits(body.Position.Y) > graph.Viewport.Height)
             {
@@ -136,11 +145,12 @@ namespace AsteroidsMania.Core
                 body.SetTransform(new Vector2(ConvertUnits.ToSimUnits(graph.Viewport.Width), body.Position.Y), body.Rotation);
 
             }
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(body.Position), null, Color.White, body.Rotation, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
+            //spriteBatch.Draw(texture, ConvertUnits.ToDisplayUnits(body.Position), null, Color.White, body.Rotation, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
         }
     }
 }
